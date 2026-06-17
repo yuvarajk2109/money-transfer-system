@@ -1,0 +1,43 @@
+.calendar {
+  background: var(--surface-container-background-medium);
+  color: var(--surface-foreground);
+
+  border-radius: 12px;
+  padding: 12px;
+  width: 300px;
+
+  border: 2px solid var(--surface-line-subtle);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.weekday {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 4px 0;
+  border-bottom: 2px solid var(--surface-line-subtle);
+}
+
+.date-cell:hover {
+  background: var(--surface-container-background-low);
+  border-color: var(--surface-line-subtle);
+}
+
+.date-cell.today {
+  background: var(--accent-primary-background);
+  color: var(--accent-primary-foreground);
+  font-weight: 600;
+  border-color: var(--accent-primary-background);
+}
+
+.date-cell.selected {
+  border: 2px solid var(--surface-foreground-link);
+  font-weight: 600;
+}
