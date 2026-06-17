@@ -1,0 +1,39 @@
+<header class="navbar-fixed">
+    <div class="navbar-inner">
+
+        @if (!isHomePage()) {
+        <div class="nav-left">
+            <span class="brand">
+                <i class="fa-solid fa-coins"></i>
+                Money Transfer System
+            </span>
+        </div>
+        }
+
+        <div class="nav-right">
+
+            @if (!auth.isAuthenticated()) {
+            <a routerLink="/" class="nav-link">Home</a>
+            <a routerLink="/login" class="nav-link">Login</a>
+            <a routerLink="/register" class="nav-link">Register</a>
+            }
+
+            @if (auth.isAuthenticated()) {
+            <a [routerLink]="getDashboardRoute()" class="nav-link">Dashboard</a>
+            <a class="nav-link logout-btn" (click)="openLogoutModal()">Logout</a>
+            }
+
+            <!-- Dark mode toggle -->
+            <button class="nav-link theme-toggle" (click)="toggleDarkMode()" type="button">
+                @if (!darkMode) {
+                <i class="fa-solid fa-moon"></i>
+                } @else {
+                <i class="fa-solid fa-sun"></i>
+                }
+            </button>
+
+        </div>
+
+
+    </div>
+</header>
