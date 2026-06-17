@@ -1,0 +1,42 @@
+<div class="profile-section">
+
+  <button type="button" class="profile-icon" (click)="toggleMenu()">
+    <i class="fa-solid fa-user"></i>
+  </button>
+
+  @if (showMenu) {
+  <div class="profile-menu">
+
+    <div class="profile-grid">
+
+      <div class="profile-item">
+        <div class="label">Name</div>
+        <div class="value">{{ profile?.holderName || 'N/A' }}</div>
+      </div>
+
+      <div class="profile-item">
+        <div class="label">Email</div>
+        <div class="value">{{ profile?.email || 'N/A' }}</div>
+      </div>
+
+      <div class="profile-item">
+        <div class="label">Phone</div>
+        <div class="value">{{ profile?.phone || 'N/A' }}</div>
+      </div>
+
+      <div class="profile-item full">
+        <div class="label">Address</div>
+        <div class="value wrap">{{ profile?.address || 'N/A' }}</div>
+      </div>
+
+      <div class="profile-item">
+        <div class="label">DOB</div>
+        <div class="value">{{ profile?.dateOfBirth || 'N/A' }}</div>
+      </div>
+
+    </div>
+
+  </div>
+  }
+
+</div>
