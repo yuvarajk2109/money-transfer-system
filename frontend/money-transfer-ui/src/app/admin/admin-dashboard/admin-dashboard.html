@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="card">
+    <h1>{{ holderName }}</h1>
+
+    <div class="action-grid">
+
+      <div routerLink="approvals" routerLinkActive="active" #rla1="routerLinkActive" class="action-card"
+        [class.active]="rla1.isActive">
+
+        <div class="action-icon">
+          <i class="fa-solid fa-check-double"></i>
+        </div>
+
+        <h3>Pending Approvals</h3>
+        <p>Review and approve new accounts</p>
+      </div>
+
+      <div routerLink="rollbacks" routerLinkActive="active" #rlaRollback="routerLinkActive" class="action-card"
+        [class.active]="rlaRollback.isActive">
+
+        <div class="action-icon">
+          <i class="fa-solid fa-rotate-left"></i>
+        </div>
+
+        <h3>Rollback Requests</h3>
+        <p>Review and approve rollback requests</p>
+
+      </div>
+
+      <div routerLink="deposit" routerLinkActive="active" #rla2="routerLinkActive" class="action-card"
+        [class.active]="rla2.isActive">
+
+        <div class="action-icon">
+          <i class="fa-solid fa-money-bill-transfer"></i>
+        </div>
+
+        <h3>Deposit Money</h3>
+        <p>Credit funds to any account</p>
+      </div>
+
+      <div routerLink="accounts" routerLinkActive="active" #rla4="routerLinkActive" class="action-card"
+        [class.active]="rla4.isActive">
+
+        <div class="action-icon">
+          <i class="fa-solid fa-user-group"></i>
+        </div>
+
+        <h3>All Accounts</h3>
+        <p>Inspect user accounts and balances</p>
+      </div>
+
+      <div routerLink="transactions" routerLinkActive="active" #rla3="routerLinkActive" class="action-card"
+        [class.active]="rla3.isActive">
+
+        <div class="action-icon">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <h3>All Transactions</h3>
+        <p>View system-wide transaction logs</p>
+      </div>
+
+      <div routerLink="analytics" routerLinkActive="active" #rla5="routerLinkActive" class="action-card"
+        [class.active]="rla5.isActive">
+
+        <div class="action-icon">
+          <i class="fa-solid fa-gauge-high"></i>
+        </div>
+
+        <h3>Analytics</h3>
+        <p>Snowflake KPI dashboard</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<router-outlet></router-outlet>
