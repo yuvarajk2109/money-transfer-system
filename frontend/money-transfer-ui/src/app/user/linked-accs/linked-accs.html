@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="card">
+    <div class="section-header">
+      <h2>My Linked Accounts</h2>
+    </div>
+
+    @if (loading) {
+      <p>Loading accounts...</p>
+    } @else if (myAccounts.length === 0) {
+      <p>No accounts found.</p>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Account ID</th>
+              <th>Type</th>
+              <th>Min Balance</th>
+              <th>Current Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (acc of myAccounts; track acc.id) {
+            <tr>
+              <td>{{ acc.id }}</td>
+              <td><span class="badge">{{ acc.accountType }}</span></td>
+              <td>₹{{ acc.minBalance }}</td>
+              <td>₹{{ acc.balance }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
