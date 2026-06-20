@@ -218,6 +218,22 @@ h2 {
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);
 }
 
+h2.success {
+  color: var(--status-success-background);
+}
+
+h2.info {
+  color: var(--status-info-background);
+}
+
+h2.warning {
+  color: var(--status-warning-background);
+}
+
+h2.danger {
+  color: var(--status-error-background);
+}
+
 h3 {
   margin-bottom: 10px;
 }
