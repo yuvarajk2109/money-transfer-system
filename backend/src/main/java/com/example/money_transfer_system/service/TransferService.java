@@ -279,7 +279,7 @@ public class TransferService {
 
         transactionLogRepository.save(reversal);
 
-        log.info("Rollback approved by admin {} for transaction {}", adminId, transactionId);
+        log.info("Admin {} approved rollback for transaction ID: {}", adminId, transactionId);
 
         // Revoke Rewards
         try {
@@ -304,7 +304,7 @@ public class TransferService {
 
         transactionLogRepository.save(original);
 
-        log.info("Rollback rejected for transaction {}", transactionId);
+        log.info("Admin rejected rollback for transaction ID: {}", transactionId);
     }
 
     public List<TransactionLog> getPendingRollbacks() {

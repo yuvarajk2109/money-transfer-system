@@ -107,7 +107,7 @@ public class AccountService {
         account.setBalance(account.getMinBalance());
 
         Account savedAccount = accountRepository.save(account);
-        log.info("Account approved: id={}, email={}, initialBalance={}", savedAccount.getId(), savedAccount.getEmail(),
+        log.info("Admin approved account ID: {} ({}) with initial balance ₹{}", savedAccount.getId(), savedAccount.getEmail(),
                 account.getMinBalance());
 
         // Auto-link accounts with same email and holderName
@@ -143,7 +143,7 @@ public class AccountService {
 
         account.setStatus(AccountStatus.CLOSED);
         Account rejected = accountRepository.save(account);
-        log.info("Account rejected: id={}, email={}", accountId, account.getEmail());
+        log.info("Admin rejected account ID: {} ({})", accountId, account.getEmail());
         return rejected;
     }
 
