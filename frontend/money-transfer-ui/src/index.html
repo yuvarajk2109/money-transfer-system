@@ -1,5 +1,9 @@
 <!doctype html>
+<!--#if expr="$HTTP_COOKIE=/webfont-loaded=true/" -->
+<html lang="en" class="webfont-loaded">
+<!--#else -->
 <html lang="en">
+<!--#endif -->
 
 <head>
   <meta charset="utf-8">
@@ -17,7 +21,57 @@
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
     rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Fidelity Sans';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-Regular.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-Regular.woff) format("woff");
+    }
 
+    @font-face {
+      font-family: 'Fidelity Sans Italic';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-Italic.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-Italic.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Bold';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-Bold.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-Bold.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Bold Italic';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-BoldItalic.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-BoldItalic.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Extra Bold';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-ExtraBold.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-ExtraBold.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Light';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-Light.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-Light.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Light Italic';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-LightItalic.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-LightItalic.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Ultra Light';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-UltraLight.woff2) format("woff2"), url(https://assets.fidelity.com/fonts/FidelitySans-UltraLight.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Condensed Medium';
+      src: url(https://assets.fidelity.com/fonts/FidelitySansCondensed-Medium.woff2) format("woff2"), url(https://dpcs-assets-fidelity-stage.dpcs.fmr.com/fonts/FidelitySansCondensed-Medium.woff) format("woff");
+    }
+
+    @font-face {
+      font-family: 'Fidelity Sans Demibold';
+      src: url(https://assets.fidelity.com/fonts/FidelitySans-Demibold.woff2) format("woff2"), url(https://dpcs-assets-fidelity-stage.dpcs.fmr.com/fonts/FidelitySans-Demibold.woff) format("woff");
+    }
+  </style>
 </head>
 
 <body>
