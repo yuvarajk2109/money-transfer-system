@@ -1,0 +1,9 @@
+.fa-square-check {
+    color: var(--accent-primary-background);
+    font-size: 20px;
+}
+
+.fa-square-xmark {
+    color: var(--status-error-container-bg);
+    font-size: 20px;
+}

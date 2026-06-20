@@ -2,7 +2,7 @@
   <h2>Money Transfer System</h2>
   <div>
     <span>{{ holderName }}</span>
-    <button class="btn btn-small" (click)="logout()">Logout</button>
+    <button class="btn is-small" (click)="logout()">Logout</button>
   </div>
 </div> -->
 
@@ -20,7 +20,9 @@
       <p>Total Balance: <strong>₹{{ totalBalance }}</strong></p>
       } @else {
       <p>Account ID: <strong>{{ accountId }}</strong></p>
+      <p>Type: <strong>{{ singleAccountType }}</strong></p>
       <p>Current Balance: <strong>₹{{ balance }}</strong></p>
+      <p>Min. Balance: <strong>₹{{ singleMinBalance }}</strong></p>
       }
       <p>Reward Points: <strong>{{ totalPoints }}</strong></p>
     </div>

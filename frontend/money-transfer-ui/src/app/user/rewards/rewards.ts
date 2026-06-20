@@ -2,18 +2,19 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { API } from '../../core/api';
+import { CustomDatePipe } from '../../shared/pipes/custom-date.pipe';
 
 @Component({
   selector: 'app-rewards',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomDatePipe],
   templateUrl: './rewards.html',
   styleUrl: './rewards.css'
 })
 export class Rewards implements OnInit {
 
   rewards: any[] = [];
-  summary: any = { totalPoints: 0, totalRewards: 0, revokedPoints: 0 };
+  summary: any = { totalPoints: 0, totalRewards: 0, revokedPoints: 0, usedPoints: 0, totalPointsLifetime: 0 };
 
   linkedAccounts: any[] = [];
   linkableAccounts: any[] = [];

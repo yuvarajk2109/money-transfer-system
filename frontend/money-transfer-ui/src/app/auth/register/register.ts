@@ -5,11 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { API } from '../../core/api';
 import { FormService } from '../../core/services/form.service';
+import { Dropdown, DropdownOption } from '../../shared/dropdown/dropdown';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, Dropdown],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
@@ -28,6 +29,11 @@ export class Register {
   confirmPassword = '';
 
   accountTypes = ['SAVINGS', 'STUDENT', 'CURRENT', 'SALARY', 'NRE', 'NRO', 'BUSINESS', 'PREMIUM', 'JOINT', 'SENIOR'];
+
+  accountTypeOptions: DropdownOption[] = this.accountTypes.map(type => ({
+    label: type,
+    value: type
+  }));
 
   message = '';
   messageType = '';

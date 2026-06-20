@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -22,8 +22,10 @@ export class Deposit {
 
   accountsAPI = API.ADMIN.ALL_ACCOUNTS;
 
+  @ViewChild(AccountSearch) accountSearch!: AccountSearch;
+
   accountId = 0;
-  amount = 0;
+  amount: number | null = null;
   message = '';
   messageType = '';
   loading = false;
@@ -59,13 +61,18 @@ export class Deposit {
       amount: currentAmount
     }).subscribe({
       next: () => {
-        this.form.setSuccess(this, `Deposit of ₹${currentAmount} to Account ID ${currentAccountId} successful`);
         this.accountId = 0;
-        this.amount = 0;
+        this.amount = null;
         form.resetForm();
+        if (this.accountSearch) {
+          this.accountSearch.clearSelection(false);
+        }
+        this.loading = false;
+        this.form.setSuccess(this, `Deposit of ₹${currentAmount} to Account ID ${currentAccountId} successful`);
         this.cdr.detectChanges();
       },
       error: (err) => {
+        this.loading = false;
         this.form.setError(this, err, 'Deposit failed');
         this.cdr.detectChanges();
       }

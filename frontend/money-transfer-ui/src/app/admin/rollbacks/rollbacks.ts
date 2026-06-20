@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { PaginationComponent } from '../../shared/pagination/pagination';
 import { FormService } from '../../core/services/form.service';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
+import { CustomDatePipe } from '../../shared/pipes/custom-date.pipe';
 
 @Component({
   selector: 'app-rollbacks',
@@ -14,7 +15,8 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
     RouterModule,
     CommonModule,
     PaginationComponent,
-    ConfirmDialog
+    ConfirmDialog,
+    CustomDatePipe
   ],
   templateUrl: './rollbacks.html'
 })
@@ -126,9 +128,6 @@ export class Rollbacks implements OnInit {
       });
   }
 
-  formatDate(date: string): string {
-    return date ? new Date(date).toLocaleString() : '';
-  }
 
   get paginatedRollbacks() {
     const start = (this.currentPage - 1) * this.pageSize;

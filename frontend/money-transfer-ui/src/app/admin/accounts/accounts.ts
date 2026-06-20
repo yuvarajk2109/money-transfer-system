@@ -5,12 +5,14 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { API } from '../../core/api';
 import { PaginationComponent } from '../../shared/pagination/pagination';
+import { Dropdown, DropdownOption } from '../../shared/dropdown/dropdown';
 
 @Component({
   selector: 'app-admin-accounts',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, PaginationComponent],
-  templateUrl: './accounts.html'
+  imports: [CommonModule, RouterModule, FormsModule, PaginationComponent, Dropdown],
+  templateUrl: './accounts.html',
+  styleUrl: './accounts.css'
 })
 export class Accounts implements OnInit {
 
@@ -22,13 +24,26 @@ export class Accounts implements OnInit {
     approved: ''
   };
 
+  statusOptions: DropdownOption[] = [
+    { label: 'All', value: '' },
+    { label: 'Active', value: 'ACTIVE' },
+    { label: 'Locked', value: 'LOCKED' },
+    { label: 'Closed', value: 'CLOSED' }
+  ];
+
+  approvedOptions: DropdownOption[] = [
+    { label: 'All', value: '' },
+    { label: 'Yes', value: 'true' },
+    { label: 'No', value: 'false' }
+  ];
+
   pageSize = 10;
   currentPage = 1;
 
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadAccounts();
@@ -53,7 +68,7 @@ export class Accounts implements OnInit {
     this.filteredAccounts = this.accounts.filter(acc => {
 
       if (this.filters.status &&
-          acc.status !== this.filters.status) {
+        acc.status !== this.filters.status) {
         return false;
       }
 
@@ -68,6 +83,12 @@ export class Accounts implements OnInit {
     });
 
     this.currentPage = 1;
+  }
+
+  resetFilters(): void {
+    this.filters.status = '';
+    this.filters.approved = '';
+    this.applyFilters();
   }
 
   formatAmount(amount: number): string {

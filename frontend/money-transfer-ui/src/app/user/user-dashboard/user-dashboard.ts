@@ -24,6 +24,9 @@ export class UserDashboard {
   accountId = '';
   balance = '0.00';
   totalPoints = 0;
+  
+  singleAccountType = '';
+  singleMinBalance = '0.00';
 
   myAccounts: any[] = [];
   hasMultipleAccounts = false;
@@ -120,6 +123,9 @@ export class UserDashboard {
         if (this.hasMultipleAccounts) {
           const total = data.reduce((sum: number, acc: any) => sum + Number(acc.balance), 0);
           this.totalBalance = total.toFixed(2);
+        } else if (data.length === 1) {
+          this.singleAccountType = data[0].accountType;
+          this.singleMinBalance = Number(data[0].minBalance).toFixed(2);
         }
         this.cdr.detectChanges();
       },

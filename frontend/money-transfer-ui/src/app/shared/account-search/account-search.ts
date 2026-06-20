@@ -28,6 +28,7 @@ export class AccountSearch implements OnInit {
 
   @Input() apiUrl!: string;
   @Input() excludeCurrentUser = false;
+  @Input() excludeAccountIds: number[] = [];
 
   @Output() accountSelected = new EventEmitter<Account>();
 
@@ -58,6 +59,10 @@ export class AccountSearch implements OnInit {
           if (acc.id === 1) return false; // hide admin
 
           if (this.excludeCurrentUser && acc.id === currentUserId) {
+            return false;
+          }
+
+          if (this.excludeAccountIds && this.excludeAccountIds.includes(acc.id)) {
             return false;
           }
 
@@ -135,10 +140,12 @@ export class AccountSearch implements OnInit {
     }
   }
 
-  clearSelection(): void {
+  clearSelection(emitEvent = true): void {
     this.searchTerm = '';
     this.selectedAccount = null;
     this.filteredAccounts = [];
-    this.accountSelected.emit(null as any);
+    if (emitEvent) {
+      this.accountSelected.emit(null as any);
+    }
   }
 }

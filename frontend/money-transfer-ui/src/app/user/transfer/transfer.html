@@ -1,28 +1,18 @@
 <div class="container">
   <div class="card">
-    <h2>Transfer Money</h2>
+    <div class="section-header">
+      <h2>Transfer Money</h2>
+    </div>
 
-    <form (ngSubmit)="transfer()">
+    <form #transferForm="ngForm" (ngSubmit)="transfer(transferForm)">
 
       <!-- From Account (only visible if multiple accounts) -->
       @if (hasMultipleAccounts) {
       <div class="form-group">
         <label>From Account</label>
-        <div class="form-select-wrapper" #fromWrapper>
-          <select
-            [(ngModel)]="transferData.fromAccountId"
-            name="fromAccount"
-            (change)="onFromAccountChange(); fromWrapper.classList.remove('open')"
-            (click)="fromWrapper.classList.toggle('open')"
-            (blur)="fromWrapper.classList.remove('open')"
-            class="form-select">
-            @for (acc of myAccounts; track acc.id) {
-            <option [ngValue]="acc.id">{{ acc.accountType }} (ID: {{ acc.id }}) - ₹{{ acc.balance }}</option>
-            }
-          </select>
-          <i class="fa-solid fa-angle-down select-arrow-down"></i>
-          <i class="fa-solid fa-angle-up select-arrow-up"></i>
-        </div>
+        <app-dropdown [(ngModel)]="transferData.fromAccountId" name="fromAccount"
+          (selectionChange)="onFromAccountChange()" [options]="fromAccountOptions">
+        </app-dropdown>
       </div>
 
       <div class="form-group">
@@ -37,29 +27,15 @@
       @if (isSelfTransfer) {
       <div class="form-group">
         <label>To Account</label>
-        <div class="form-select-wrapper" #toWrapper>
-          <select
-            [(ngModel)]="transferData.toAccountId"
-            name="toAccount"
-            (change)="onSelfTransferTargetChange(); toWrapper.classList.remove('open')"
-            (click)="toWrapper.classList.toggle('open')"
-            (blur)="toWrapper.classList.remove('open')"
-            class="form-select">
-            <option [ngValue]="0" disabled>Select target account</option>
-            @for (acc of selfTransferTargets; track acc.id) {
-            <option [ngValue]="acc.id">{{ acc.accountType }} (ID: {{ acc.id }}) - ₹{{ acc.balance }}</option>
-            }
-          </select>
-          <i class="fa-solid fa-angle-down select-arrow-down"></i>
-          <i class="fa-solid fa-angle-up select-arrow-up"></i>
-        </div>
+        <app-dropdown [(ngModel)]="transferData.toAccountId" name="toAccount"
+          (selectionChange)="onSelfTransferTargetChange()" [options]="selfTransferTargetOptions"
+          placeholder="Select target account" [placeholderValue]="0" [placeholderDisabled]="true">
+        </app-dropdown>
       </div>
       } @else {
       <!-- Regular transfer: account search -->
       <div class="form-group">
-        <app-account-search
-          [apiUrl]="accountsAPI"
-          [excludeCurrentUser]="true"
+        <app-account-search [apiUrl]="accountsAPI" [excludeCurrentUser]="true" [excludeAccountIds]="myAccountIds"
           (accountSelected)="onAccountSelected($event); clearMessage()">
         </app-account-search>
       </div>
@@ -68,53 +44,84 @@
       <div class="form-group">
         <label>Amount (₹)</label>
 
-        <input
-          type="number"
-          [(ngModel)]="transferData.amount"
-          (input)="clearMessage()"
-          name="amount"
-          #amountCtrl="ngModel"
-          required
-          min="1"
-        />
+        <input type="number" [(ngModel)]="transferData.amount" (input)="clearMessage()" name="amount"
+          #amountCtrl="ngModel" required min="1" />
 
       </div>
 
       @if (amountCtrl.invalid && (amountCtrl.dirty || amountCtrl.touched)) {
-        <div class="message error inline">
+      <div class="message error inline">
 
-          @if (amountCtrl.errors?.['required']) {
-            Amount is required
-          }
+        @if (amountCtrl.errors?.['required']) {
+        Amount is required
+        }
 
-          @if (amountCtrl.errors?.['min']) {
-            Amount must be greater than 0
-          }
+        @if (amountCtrl.errors?.['min']) {
+        Amount must be greater than 0
+        }
 
-        </div>
+      </div>
       }
 
       @if (transferData.amount > currentBalance - minBalance) {
-        <div class="message error inline">
-          Amount exceeds available balance (Minimum balance of ₹{{ minBalance }} must be maintained)
-        </div>
+      <div class="message error inline">
+        Amount exceeds available balance (Minimum balance of ₹{{ minBalance }} must be maintained)
+      </div>
       }
 
+
+      @if (!isSelfTransfer) {
+      <div class="form-group">
+        <label class="toggle-label">
+          <input type="checkbox" [(ngModel)]="useRewardPoints" name="useRewardPoints" (change)="clearMessage()">
+          Use Reward Points
+        </label>
+      </div>
+
+      @if (useRewardPoints) {
+      <div class="form-group">
+        <label>Reward Points to Use</label>
+        <input type="number" [(ngModel)]="transferData.usedRewardPoints" (input)="clearMessage()"
+          name="usedRewardPoints" #pointsCtrl="ngModel" required min="1" [max]="activePoints" />
+        <div class="helper-text">Available Points: {{ activePoints }}</div>
+        
+        @if (pointsCtrl.invalid && (pointsCtrl.dirty || pointsCtrl.touched)) {
+        <div class="message error inline">
+          @if (pointsCtrl.errors?.['required']) {
+          Please specify the number of reward points to use.
+          }
+          @if (pointsCtrl.errors?.['min']) {
+          Reward points must be greater than 0.
+          }
+          @if (pointsCtrl.errors?.['max']) {
+          You cannot use more reward points than you have available.
+          }
+        </div>
+        }
+
+        @if (transferData.usedRewardPoints > transferData.amount && transferData.amount > 0) {
+        <div class="message error inline">
+          Reward points used cannot exceed the transfer amount.
+        </div>
+        }
+      </div>
+      }
+      }
 
       @if (message) {
-        <div class="message" [ngClass]="messageType">
-          {{ message }}
-        </div>
+      <div class="message" [ngClass]="messageType">
+        {{ message }}
+      </div>
       }
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="
+      <button type="submit" class="btn is-primary" [disabled]="
           loading ||
           !transferData.toAccountId ||
           amountCtrl.invalid ||
-          transferData.amount > currentBalance - minBalance
+          transferData.amount > currentBalance - minBalance ||
+          (useRewardPoints && (!transferData.usedRewardPoints || transferData.usedRewardPoints <= 0)) ||
+          (useRewardPoints && transferData.usedRewardPoints > activePoints) ||
+          (useRewardPoints && transferData.usedRewardPoints > transferData.amount)
         ">
         {{ loading ? 'Processing...' : (isSelfTransfer ? 'Self Transfer' : 'Transfer') }}
       </button>

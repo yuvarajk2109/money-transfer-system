@@ -1,131 +1,98 @@
 <div class="container">
   <div class="card">
-    <h2>All Transactions</h2>
+    <div class="section-header">
+      <div class="title-group">
+        <h2>All Transactions</h2>
+      </div>
+      <button class="btn is-secondary" (click)="resetFilters()">
+        Reset Filters
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+    </div>
 
     @if (transactions.length === 0) {
-      <p>No transactions yet.</p>
+    <p class="empty-text">No transactions yet.</p>
     } @else {
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>
               <div class="th-filter">
                 <span>Date</span>
 
-                <div class="filter-wrapper" #dateWrapper>
-                  <select
-                    [(ngModel)]="filters.dateRange"
-                    (change)="applyFilters(); dateWrapper.classList.remove('open')"
-                    (click)="dateWrapper.classList.toggle('open')"
-                    (blur)="dateWrapper.classList.remove('open')"
-                    class="table-filter">
-                    <option value="">All</option>
-                    <option value="today">Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="week">Last 7 Days</option>
-                    <option value="month">Last 30 Days</option>
-                  </select>
-                  <i class="fa-solid fa-angle-down select-arrow-down"></i>
-                  <i class="fa-solid fa-angle-up select-arrow-up"></i>
-                </div>
+                <app-dropdown [(ngModel)]="filters.dateRange" (selectionChange)="applyFilters()" [options]="dateOptions"
+                  [isTableFilter]="true">
+                </app-dropdown>
               </div>
             </th>
 
-              <th>
-                <div class="th-filter">
-                  <span>Type</span>
-                  <div class="filter-wrapper" #typeWrapper>
-                    <select
-                      [(ngModel)]="filters.transactionType"
-                      (change)="applyFilters(); typeWrapper.classList.remove('open')"
-                      (click)="typeWrapper.classList.toggle('open')"
-                      (blur)="typeWrapper.classList.remove('open')"
-                      class="table-filter">
-                      <option value="">All</option>
-                      <option value="TRANSFER">Transfer</option>
-                      <option value="DEPOSIT">Deposit</option>
-                    </select>
-                    <i class="fa-solid fa-angle-down select-arrow-down"></i>
-                    <i class="fa-solid fa-angle-up select-arrow-up"></i>
-                  </div>
-                </div>
-              </th>
+            <th>
+              <div class="th-filter">
+                <span>Type</span>
+                <app-dropdown [(ngModel)]="filters.transactionType" (selectionChange)="applyFilters()"
+                  [options]="typeOptions" [isTableFilter]="true">
+                </app-dropdown>
+              </div>
+            </th>
 
-              <th>From</th>
-              <th>To</th>
-              <th>Amount</th>
-              <th>
-                <div class="th-filter">
-                  <span>Status</span>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>
+              <div class="th-filter">
+                <span>Status</span>
 
-                  <div class="filter-wrapper" #statusWrapper>
-                    <select
-                      [(ngModel)]="filters.status"
-                      (change)="applyFilters(); statusWrapper.classList.remove('open')"
-                      (click)="statusWrapper.classList.toggle('open')"
-                      (blur)="statusWrapper.classList.remove('open')"
-                      class="table-filter">
-                      <option value="">All</option>
-                      <option value="SUCCESS">Success</option>
-                      <option value="FAILED">Failed</option>
-                      <option value="ROLLBACK_REQUESTED">Rollback Requested</option>
-                      <option value="ROLLED_BACK">Rolled Back</option>
-                      <option value="ROLLBACK_REJECTED">Rollback Rejected</option>
-                    </select>
-                    <i class="fa-solid fa-angle-down select-arrow-down"></i>
-                    <i class="fa-solid fa-angle-up select-arrow-up"></i>
-                  </div>
-                </div>
-              </th>
-            </tr>
-          </thead>
+                <app-dropdown [(ngModel)]="filters.status" (selectionChange)="applyFilters()" [options]="statusOptions"
+                  [isTableFilter]="true">
+                </app-dropdown>
+              </div>
+            </th>
+          </tr>
+        </thead>
 
-          <tbody>
-            @if (paginatedTransactions.length === 0) {
-              <tr>
-                <td colspan="6" class="text-center">
-                  <p>No transactions found.</p>
-                </td>
-              </tr>
-            } @else {
-              @for (tx of paginatedTransactions; track tx.id) {
-                <tr>
-                  <td>{{ formatDate(tx.createdOn) }}</td>
+        <tbody>
+          @if (paginatedTransactions.length === 0) {
+          <tr>
+            <td colspan="6" class="text-center">
+              <p class="empty-text">No transactions found.</p>
+            </td>
+          </tr>
+          } @else {
+          @for (tx of paginatedTransactions; track tx.id) {
+          <tr>
+            <td>{{ tx.createdOn | customDate:true:true }}</td>
 
-                  <td>
-                    <span class="badge {{ tx.transactionType.toLowerCase() }}">
-                      {{ tx.transactionType }}
-                    </span>
-                  </td>
+            <td>
+              <span class="badge {{ tx.transactionType.toLowerCase() }}">
+                {{ tx.transactionType }}
+              </span>
+            </td>
 
-                  <td>{{ tx.fromAccountId || 'N/A' }}</td>
-                  <td>{{ tx.toAccountId || 'N/A' }}</td>
+            <td>{{ tx.fromAccountId || 'N/A' }}</td>
+            <td>{{ tx.toAccountId || 'N/A' }}</td>
 
-                  <td>₹{{ formatAmount(tx.amount) }}</td>
+            <td>₹{{ formatAmount(tx.amount) }}</td>
 
-                  <td>
-                    <span class="badge {{ tx.status.toLowerCase() }}">
-                      {{ tx.status }}
-                    </span>
-                  </td>
-                </tr>
-              }
-            }
-          </tbody>
-        </table>
+            <td>
+              <span class="badge {{ tx.status.toLowerCase() }}">
+                {{ tx.status }}
+              </span>
+            </td>
+          </tr>
+          }
+          }
+        </tbody>
+      </table>
 
-        <app-pagination
-          [totalItems]="filteredTransactions.length"
-          [pageSize]="pageSize"
-          [currentPage]="currentPage"
-          (pageChange)="onPageChange($event)">
-        </app-pagination>
+      <app-pagination [totalItems]="filteredTransactions.length" [pageSize]="pageSize" [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
 
-      </div>
+    </div>
     }
 
     <br>
-    <!-- <button class="btn btn-secondary" routerLink="/admin">Dashboard</button> -->
+    <!-- <button class="btn is-secondary" routerLink="/admin">Dashboard</button> -->
   </div>
 </div>

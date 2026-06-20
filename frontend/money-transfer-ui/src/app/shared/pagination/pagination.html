@@ -1,23 +1,19 @@
 @if (totalPages > 1) {
-  <div class="pagination">
+<div class="pagination">
 
-    <button (click)="changePage(currentPage - 1)"
-            [disabled]="currentPage === 1">
-      Prev
-    </button>
+  <button class="btn is-secondary" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+    Prev
+  </button>
 
-    @for (p of pages(); track p) {
-      <button
-        (click)="changePage(p)"
-        [class.active]="p === currentPage">
-        {{ p }}
-      </button>
-    }
+  @for (p of pages(); track p) {
+  <button class="btn is-small" [ngClass]="p === currentPage ? 'is-primary' : 'is-secondary'" (click)="changePage(p)">
+    {{ p }}
+  </button>
+  }
 
-    <button (click)="changePage(currentPage + 1)"
-            [disabled]="currentPage === totalPages">
-      Next
-    </button>
+  <button class="btn is-primary" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+    Next
+  </button>
 
-  </div>
+</div>
 }

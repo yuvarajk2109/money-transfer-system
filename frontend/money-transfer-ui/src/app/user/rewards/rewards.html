@@ -1,149 +1,113 @@
 <div class="container">
   <div class="card">
 
+    <div class="section-header">
+      <h2>Rewards Summary</h2>
+    </div>
+
     <!-- Summary Cards -->
     <div class="rewards-summary">
 
       <div class="summary-card points-card">
         <div class="summary-icon">
-          <svg viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="M12 2l3.09 6.26L22 9.27l-5 4.87
-                 1.18 6.88L12 17.77l-6.18 3.25L7 14.14
-                 2 9.27l6.91-1.01L12 2z"/>
-          </svg>
+          <i class="fa-solid fa-star"></i>
         </div>
         <div class="summary-value">{{ summary.totalPoints }}</div>
         <div class="summary-label">Active Points</div>
       </div>
 
-      <div class="summary-card">
-        <div class="summary-icon">
-          <svg viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="M9 16.2l-3.5-3.5L4 14.2 9 19l12-12-1.5-1.5z"/>
-          </svg>
+      <div class="summary-card total-card">
+        <div class="summary-icon total-icon">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
         </div>
-        <div class="summary-value">{{ summary.totalRewards }}</div>
-        <div class="summary-label">Total Rewards</div>
+        <div class="summary-value">{{ summary.usedPoints }}</div>
+        <div class="summary-label">Used Points</div>
       </div>
 
-      <div class="summary-card">
+      <div class="summary-card revoked-card">
         <div class="summary-icon revoked-icon">
-          <svg viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41
-                 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19
-                 19 17.59 13.41 12z"/>
-          </svg>
+          <i class="fa-solid fa-sack-xmark"></i>
         </div>
         <div class="summary-value">{{ summary.revokedPoints }}</div>
         <div class="summary-label">Revoked Points</div>
       </div>
 
-    </div>
-
-    <!-- Linked Accounts Section -->
-    <div class="section">
-      <h3>Linked Accounts</h3>
-
-      @if (linkedAccounts.length === 0) {
-        <p class="empty-text">No linked accounts yet.</p>
-      }
-
-      @if (linkedAccounts.length > 0) {
-        <div class="linked-grid">
-          @for (acc of linkedAccounts; track acc.id) {
-            <div class="linked-card">
-              <div class="linked-info">
-                <strong>{{ acc.holderName }}</strong>
-                <span class="linked-meta">{{ acc.accountType }} · ID: {{ acc.id }}</span>
-              </div>
-              <span class="badge active">Linked</span>
-            </div>
-          }
+      <div class="summary-card total-card">
+        <div class="summary-icon total-icon">
+          <i class="fa-solid fa-gift"></i>
         </div>
-      }
+        <div class="summary-value">{{ summary.totalRewards }}</div>
+        <div class="summary-label">Total Rewards</div>
+      </div>
 
-      <!-- Linkable Accounts -->
-      @if (linkableAccounts.length > 0) {
-        <h4>Available to Link</h4>
-        <div class="linked-grid">
-          @for (acc of linkableAccounts; track acc.id) {
-            <div class="linked-card linkable">
-              <div class="linked-info">
-                <strong>{{ acc.holderName }}</strong>
-                <span class="linked-meta">{{ acc.accountType }} · ID: {{ acc.id }}</span>
-              </div>
-              <button class="btn btn-primary btn-small" (click)="linkAccount(acc.id)">Link</button>
-            </div>
-          }
+      <div class="summary-card total-card">
+        <div class="summary-icon total-icon">
+          <i class="fa-solid fa-piggy-bank"></i>
         </div>
-      }
+        <div class="summary-value">{{ summary.totalPointsLifetime }}</div>
+        <div class="summary-label">Total Points (Lifetime)</div>
+      </div>
 
-      @if (linkMessage) {
-        <div class="message" [ngClass]="linkMessageType">{{ linkMessage }}</div>
-      }
     </div>
 
     <!-- Reward History Table -->
-    <div class="section">
-      <h3>Reward History</h3>
+    <h3>Reward History</h3>
 
-      @if (loading) {
-        <p class="empty-text">Loading...</p>
-      }
+    @if (!loading && rewards.length === 0) {
+    <p class="empty-text">No rewards earned yet. Transfer over ₹100 to start earning!</p>
+    }
 
-      @if (!loading && rewards.length === 0) {
-        <p class="empty-text">No rewards earned yet. Transfer over ₹100 to start earning!</p>
-      }
+    @if (loading) {
+    <p class="empty-text">Loading...</p>
+    }
 
-      @if (!loading && rewards.length > 0) {
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Transaction ID</th>
-                <th>Amount</th>
-                <th>Points</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (r of pagedRewards; track r.id) {
-                <tr [class.revoked-row]="r.revoked">
-                  <td>{{ r.transactionId }}</td>
-                  <td>₹{{ r.transactionAmount }}</td>
-                  <td>
-                    <strong>{{ r.points }}</strong>
-                  </td>
-                  <td>
-                    @if (r.revoked) {
-                      <span class="badge failed">Revoked</span>
-                    } @else {
-                      <span class="badge success">Active</span>
-                    }
-                  </td>
-                  <td>{{ r.createdAt | date:'medium' }}</td>
-                </tr>
+
+
+    @if (!loading && rewards.length > 0) {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Amount</th>
+            <th>Points</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of pagedRewards; track r.id) {
+          <tr [class.revoked-row]="r.revoked">
+            <td>{{ r.transactionId }}</td>
+            <td>₹{{ r.transactionAmount }}</td>
+            <td>
+              <strong>{{ r.points }}</strong>
+            </td>
+            <td>
+              @if (r.revoked) {
+              <span class="badge failed">Revoked</span>
+              } @else {
+              <span class="badge success">Active</span>
               }
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        @if (totalPages > 1) {
-          <div class="pagination">
-            <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">←</button>
-            @for (p of pages; track p) {
-              <button [class.active]="p === currentPage" (click)="goToPage(p)">{{ p }}</button>
-            }
-            <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">→</button>
-          </div>
-        }
-      }
+            </td>
+            <td>{{ r.createdAt | customDate:true:true }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+    <div class="pagination">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">←</button>
+      @for (p of pages; track p) {
+      <button [class.active]="p === currentPage" (click)="goToPage(p)">{{ p }}</button>
+      }
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">→</button>
+    </div>
+    }
+    }
 
   </div>
 </div>
