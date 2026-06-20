@@ -158,7 +158,7 @@ public class AccountService {
     }
 
     public List<Account> getPendingAccounts() {
-        return accountRepository.findByApprovedFalse();
+        return accountRepository.findByApprovedFalseAndStatus(AccountStatus.LOCKED);
     }
 
     public List<Account> getActiveAccountsByEmail(String email) {

@@ -22,7 +22,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     boolean existsByEmailAndAccountType(String email, AccountType accountType);
     
-    List<Account> findByApprovedFalse();
+    List<Account> findByApprovedFalseAndStatus(AccountStatus status);
     
     List<Account> findByStatus(AccountStatus status);
 
