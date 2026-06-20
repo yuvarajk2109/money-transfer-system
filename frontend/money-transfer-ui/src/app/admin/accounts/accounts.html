@@ -18,11 +18,12 @@
       <table>
         <thead>
           <tr>
-            <th style="width: 1%; white-space: nowrap;">ID</th>
+            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
+            <th>Type</th>
             <th>Balance</th>
-            <th>Min Bal.</th>
+            <th>Minimum Balance</th>
             <th>Rewards</th>
             <th>
               <div class="th-filter">
@@ -50,6 +51,7 @@
             <td>{{ acc.id }}</td>
             <td>{{ acc.holderName }}</td>
             <td>{{ acc.email }}</td>
+            <td>{{ acc.accountType }}</td>
             <td>₹{{ formatAmount(acc.balance) }}</td>
             <td>₹{{ formatAmount(acc.minBalance) }}</td>
             <td>{{ acc.rewardPoints }}</td>

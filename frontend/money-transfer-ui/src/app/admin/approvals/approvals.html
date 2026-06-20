@@ -26,11 +26,11 @@
           <td>{{ acc.holderName }}</td>
           <td>{{ acc.email }}</td>
           <td>
-            <button class="btn is-small btn-success" (click)="approve(acc.id)" [disabled]="loading">
+            <button class="btn is-primary" (click)="approve(acc.id)" [disabled]="loading">
               Approve
             </button>
             &nbsp;&nbsp;
-            <button class="btn is-small is-danger" (click)="reject(acc.id)" [disabled]="loading">
+            <button class="btn is-danger" (click)="reject(acc.id)" [disabled]="loading">
               Reject
             </button>
 

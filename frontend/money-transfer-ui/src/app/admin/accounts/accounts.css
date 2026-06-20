@@ -4,6 +4,6 @@
 }
 
 .fa-square-xmark {
-    color: var(--status-error-container-bg);
+    color: var(--status-error-container-fg);
     font-size: 20px;
 }

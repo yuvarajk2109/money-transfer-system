@@ -479,7 +479,7 @@ app-date-picker {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 12px;
   min-height: 42px;
   padding: 8px 18px;
   border: none;
