@@ -83,6 +83,7 @@ public class AccountService {
         account.setApproved(false);
         account.setRole(Role.ROLE_USER);
         account.setAccountType(registerRequest.getAccountType());
+        account.setMinBalance(accountProperties.getMinimumBalance(registerRequest.getAccountType().name()));
 
         account.setPhone(registerRequest.getPhone());
         account.setAddress(registerRequest.getAddress());
@@ -103,14 +104,11 @@ public class AccountService {
         account.setApproved(true);
         account.setStatus(AccountStatus.ACTIVE);
 
-        BigDecimal minimumBalance = accountProperties
-                .getMinimumBalance(account.getAccountType().name());
-
-        account.setBalance(minimumBalance);
+        account.setBalance(account.getMinBalance());
 
         Account savedAccount = accountRepository.save(account);
         log.info("Account approved: id={}, email={}, initialBalance={}", savedAccount.getId(), savedAccount.getEmail(),
-                minimumBalance);
+                account.getMinBalance());
 
         // Auto-link accounts with same email and holderName
         autoLinkIfApplicable(savedAccount);

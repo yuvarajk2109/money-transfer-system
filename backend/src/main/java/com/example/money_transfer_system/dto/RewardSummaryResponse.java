@@ -11,4 +11,6 @@ public class RewardSummaryResponse {
     private int totalPoints;
     private long totalRewards;
     private int revokedPoints;
+    private int usedPoints;
+    private int totalPointsLifetime;
 }

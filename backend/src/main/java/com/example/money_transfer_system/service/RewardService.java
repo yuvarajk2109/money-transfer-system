@@ -29,22 +29,19 @@ public class RewardService {
 
     /**
      * Process reward for a successful transfer transaction (DEBIT log).
-     * Eligibility: status=SUCCESS, amount>100, sender!=receiver, not self-transfer via linked accounts.
+     * Eligibility: status=SUCCESS, amount>100, sender!=receiver, not self-transfer
+     * via linked accounts.
      */
     @Transactional
-    public void processReward(TransactionLog transaction) {
-        // Already rewarded?
-        if (rewardPointRepository.existsByTransactionId(transaction.getId())) {
-            return;
-        }
+    public void processReward(TransactionLog transaction, int usedPoints) {
 
         // Must be SUCCESS
         if (transaction.getStatus() != TransactionStatus.SUCCESS) {
             return;
         }
 
-        // Amount must be > 100
-        if (transaction.getAmount().compareTo(new BigDecimal("100")) <= 0) {
+        // Amount must be >= 100
+        if (transaction.getAmount().compareTo(new BigDecimal("100")) < 0) {
             return;
         }
 
@@ -60,8 +57,13 @@ public class RewardService {
             return;
         }
 
-        // Calculate points: floor(amount / 100)
-        int points = transaction.getAmount().divideToIntegralValue(new BigDecimal("100")).intValue();
+        BigDecimal actualSpent = transaction.getAmount().subtract(new BigDecimal(usedPoints));
+        if (actualSpent.compareTo(new BigDecimal("100")) < 0) {
+            return;
+        }
+
+        // Calculate points: floor(actualSpent / 100)
+        int points = actualSpent.divideToIntegralValue(new BigDecimal("100")).intValue();
 
         if (points <= 0) {
             return;
@@ -78,25 +80,41 @@ public class RewardService {
                 points, transaction.getId(), transaction.getFromAccountId());
     }
 
+    @Transactional
+    public void usePoints(Long accountId, String transactionId, int pointsUsed) {
+        if (pointsUsed <= 0)
+            return;
+        RewardPoint reward = new RewardPoint();
+        reward.setAccountId(accountId);
+        reward.setTransactionId(transactionId);
+        reward.setPoints(-pointsUsed);
+        reward.setRevoked(false);
+        rewardPointRepository.save(reward);
+        log.info("Used {} reward points for transaction {} by account {}",
+                pointsUsed, transactionId, accountId);
+    }
+
     /**
      * Revoke reward points when a transaction is rolled back.
      */
     @Transactional
     public void revokeReward(String transactionId) {
-        Optional<RewardPoint> rewardOpt = rewardPointRepository.findByTransactionId(transactionId);
-        if (rewardOpt.isEmpty()) {
-            return;
+        List<RewardPoint> rewards = rewardPointRepository.findByTransactionId(transactionId);
+        for (RewardPoint reward : rewards) {
+            if (!reward.getRevoked()) {
+                reward.setRevoked(true);
+                reward.setRevokedAt(LocalDateTime.now());
+                rewardPointRepository.save(reward);
+                log.info("Revoked {} reward points for transaction {}", reward.getPoints(), transactionId);
+            }
         }
+    }
 
-        RewardPoint reward = rewardOpt.get();
-        if (reward.getRevoked()) {
-            return;
-        }
-
-        reward.setRevoked(true);
-        reward.setRevokedAt(LocalDateTime.now());
-        rewardPointRepository.save(reward);
-        log.info("Revoked {} reward points for transaction {}", reward.getPoints(), transactionId);
+    public int getUsedPointsForTransaction(String transactionId) {
+        return rewardPointRepository.findByTransactionId(transactionId).stream()
+                .filter(r -> r.getPoints() < 0)
+                .mapToInt(r -> Math.abs(r.getPoints()))
+                .sum();
     }
 
     public List<RewardResponse> getRewards(Long accountId) {
@@ -108,9 +126,7 @@ public class RewardService {
 
     public RewardSummaryResponse getSummary(Long accountId) {
         List<RewardPoint> rewards = rewardPointRepository.findByAccountIdOrderByCreatedAtDesc(accountId);
-        int total = rewards.stream().filter(r -> !r.getRevoked()).mapToInt(RewardPoint::getPoints).sum();
-        int revoked = rewards.stream().filter(RewardPoint::getRevoked).mapToInt(RewardPoint::getPoints).sum();
-        return new RewardSummaryResponse(total, rewards.size(), revoked);
+        return calculateSummary(rewards);
     }
 
     public List<RewardResponse> getGroupRewards(Long accountId) {
@@ -124,9 +140,19 @@ public class RewardService {
     public RewardSummaryResponse getGroupSummary(Long accountId) {
         List<Long> linkedIds = linkedAccountService.getLinkedAccountIds(accountId);
         List<RewardPoint> rewards = rewardPointRepository.findByAccountIdInOrderByCreatedAtDesc(linkedIds);
-        int total = rewards.stream().filter(r -> !r.getRevoked()).mapToInt(RewardPoint::getPoints).sum();
-        int revoked = rewards.stream().filter(RewardPoint::getRevoked).mapToInt(RewardPoint::getPoints).sum();
-        return new RewardSummaryResponse(total, rewards.size(), revoked);
+        return calculateSummary(rewards);
+    }
+
+    private RewardSummaryResponse calculateSummary(List<RewardPoint> rewards) {
+        int totalActive = rewards.stream().filter(r -> !r.getRevoked()).mapToInt(RewardPoint::getPoints).sum();
+        int revoked = rewards.stream().filter(r -> r.getRevoked() && r.getPoints() > 0).mapToInt(RewardPoint::getPoints)
+                .sum();
+        int usedPoints = rewards.stream().filter(r -> !r.getRevoked() && r.getPoints() < 0)
+                .mapToInt(r -> Math.abs(r.getPoints())).sum();
+        int totalPointsLifetime = rewards.stream().filter(r -> !r.getRevoked() && r.getPoints() > 0)
+                .mapToInt(RewardPoint::getPoints).sum();
+        int totalRewardsCount = (int) rewards.stream().filter(r -> !r.getRevoked()).count();
+        return new RewardSummaryResponse(totalActive, totalRewardsCount, revoked, usedPoints, totalPointsLifetime);
     }
 
     private RewardResponse toResponse(RewardPoint rp) {
@@ -138,7 +164,6 @@ public class RewardService {
         return new RewardResponse(
                 rp.getId(), rp.getAccountId(), rp.getTransactionId(),
                 rp.getPoints(), rp.getRevoked(), rp.getCreatedAt(),
-                rp.getRevokedAt(), txAmount
-        );
+                rp.getRevokedAt(), txAmount);
     }
 }

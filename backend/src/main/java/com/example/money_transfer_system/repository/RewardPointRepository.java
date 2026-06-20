@@ -16,7 +16,7 @@ public interface RewardPointRepository extends JpaRepository<RewardPoint, Long> 
 
     List<RewardPoint> findByAccountIdInOrderByCreatedAtDesc(List<Long> accountIds);
 
-    Optional<RewardPoint> findByTransactionId(String transactionId);
+    List<RewardPoint> findByTransactionId(String transactionId);
 
     boolean existsByTransactionId(String transactionId);
 

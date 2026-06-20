@@ -73,15 +73,29 @@ public class TransferService {
                 throw new AccountNotActiveException("Destination account is not approved (ACC-403)");
             }
 
+            int usedRewardPoints = request.getUsedRewardPoints() != null ? request.getUsedRewardPoints() : 0;
+
+            if (usedRewardPoints > 0) {
+                int activePoints = rewardService.getGroupSummary(fromAccount.getId()).getTotalPoints();
+                if (usedRewardPoints > activePoints) {
+                    throw new InvalidAmountException("Insufficient reward points (TRX-400)");
+                }
+                if (BigDecimal.valueOf(usedRewardPoints).compareTo(request.getAmount()) > 0) {
+                    throw new InvalidAmountException("Cannot use more points than transfer amount (TRX-400)");
+                }
+            }
+
+            BigDecimal actualDeduction = request.getAmount().subtract(BigDecimal.valueOf(usedRewardPoints));
+
             // Funds & minimum balance rules
-            if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
+            if (fromAccount.getBalance().compareTo(actualDeduction) < 0) {
                 throw new InsufficientFundsException("Insufficient funds in source account (TRX-400)");
             }
 
             BigDecimal minimumBalance = accountProperties
                     .getMinimumBalance(fromAccount.getAccountType().name());
 
-            BigDecimal balanceAfterTransfer = fromAccount.getBalance().subtract(request.getAmount());
+            BigDecimal balanceAfterTransfer = fromAccount.getBalance().subtract(actualDeduction);
             if (balanceAfterTransfer.compareTo(minimumBalance) < 0) {
                 throw new InsufficientFundsException(
                         "Transfer would violate minimum balance requirement of " + minimumBalance + " (TRX-400)");
@@ -125,7 +139,10 @@ public class TransferService {
             // Process Rewards (skip for self-transfers)
             if (!isSelfTransfer) {
                 try {
-                    rewardService.processReward(debitLog);
+                    if (usedRewardPoints > 0) {
+                        rewardService.usePoints(fromAccount.getId(), debitLog.getId(), usedRewardPoints);
+                    }
+                    rewardService.processReward(debitLog, usedRewardPoints);
                 } catch (Exception rewardEx) {
                     log.error("Failed to process reward for transaction {}: {}", debitLog.getId(), rewardEx.getMessage());
                 }
@@ -218,6 +235,8 @@ public class TransferService {
                 .orElseThrow(() -> new RuntimeException("Destination account not found"));
 
         BigDecimal amount = original.getAmount();
+        int usedPoints = rewardService.getUsedPointsForTransaction(transactionId);
+        BigDecimal actualRefund = amount.subtract(BigDecimal.valueOf(usedPoints));
 
         // Ensure destination has sufficient funds
         if (toAccount.getBalance().compareTo(amount) < 0) {
@@ -236,7 +255,7 @@ public class TransferService {
 
         // Reverse balances
         toAccount.setBalance(afterDebit);
-        fromAccount.setBalance(fromAccount.getBalance().add(amount));
+        fromAccount.setBalance(fromAccount.getBalance().add(actualRefund));
 
         accountRepository.save(toAccount);
         accountRepository.save(fromAccount);

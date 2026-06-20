@@ -5,6 +5,7 @@ import com.example.money_transfer_system.entity.Account;
 import com.example.money_transfer_system.entity.TransactionLog;
 import com.example.money_transfer_system.service.AccountService;
 import com.example.money_transfer_system.service.TransferService;
+import com.example.money_transfer_system.service.RewardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class AdminController {
 
     private final AccountService accountService;
     private final TransferService transferService;
+    private final RewardService rewardService;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/accounts/pending")
@@ -79,9 +81,33 @@ public class AdminController {
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getAllAccounts() {
+    public ResponseEntity<List<Map<String, Object>>> getAllAccounts() {
         List<Account> accounts = accountService.getAllAccounts();
-        return ResponseEntity.ok(accounts);
+        
+        List<Map<String, Object>> response = accounts.stream().map(acc -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", acc.getId());
+            map.put("holderName", acc.getHolderName());
+            map.put("email", acc.getEmail());
+            map.put("phone", acc.getPhone());
+            map.put("address", acc.getAddress());
+            map.put("dateOfBirth", acc.getDateOfBirth());
+            map.put("balance", acc.getBalance());
+            map.put("minBalance", acc.getMinBalance());
+            map.put("status", acc.getStatus());
+            map.put("approved", acc.getApproved());
+            map.put("role", acc.getRole());
+            map.put("accountType", acc.getAccountType());
+            map.put("createdAt", acc.getCreatedAt());
+            map.put("lastUpdated", acc.getLastUpdated());
+            
+            int rewardPoints = rewardService.getSummary(acc.getId()).getTotalPoints();
+            map.put("rewardPoints", rewardPoints);
+            
+            return map;
+        }).toList();
+        
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/rollbacks/{transactionId}/approve")
