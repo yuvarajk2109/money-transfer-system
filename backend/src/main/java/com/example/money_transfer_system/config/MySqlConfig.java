@@ -1,5 +1,6 @@
 package com.example.money_transfer_system.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -10,6 +11,12 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @Configuration
 public class MySqlConfig {
 
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String password;
+
     @Bean
     @Primary
     public DataSource mySqlDataSource() {
@@ -17,8 +24,8 @@ public class MySqlConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3306/money_transfer_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true");
-        dataSource.setUsername("${spring.datasource.username}");
-        dataSource.setPassword("${spring.datasource.password}");
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
 
         return dataSource;
     }
