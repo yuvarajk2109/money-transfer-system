@@ -22,7 +22,8 @@ interface Account {
   selector: 'app-account-search',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './account-search.html'
+  templateUrl: './account-search.html',
+  styleUrl: './account-search.css'
 })
 export class AccountSearch implements OnInit {
 
@@ -42,7 +43,7 @@ export class AccountSearch implements OnInit {
   showDropdown = false;
   highlightedIndex = -1;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loadAccounts();
