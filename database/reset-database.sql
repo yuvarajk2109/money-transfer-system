@@ -53,6 +53,10 @@ DROP TABLE IF EXISTS accounts;
         FOREIGN KEY (to_account_id) REFERENCES accounts(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Add SELF_TRANSFER to transaction_logs
+ALTER TABLE transaction_logs 
+MODIFY COLUMN transaction_type ENUM('DEBIT', 'CREDIT', 'DEPOSIT', 'TRANSFER', 'REVERSAL', 'SELF_TRANSFER') NOT NULL;
+
 -- Remove unique constraint on email to allow multiple accounts per email
 ALTER TABLE accounts DROP INDEX email;
 
