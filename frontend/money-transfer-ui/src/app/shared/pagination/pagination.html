@@ -1,7 +1,7 @@
 @if (totalPages > 1) {
 <div class="pagination">
 
-  <button class="btn is-secondary" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+  <button class="btn is-secondary is-small" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
     Prev
   </button>
 
@@ -11,7 +11,7 @@
   </button>
   }
 
-  <button class="btn is-primary" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+  <button class="btn is-primary is-small" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
     Next
   </button>
 
