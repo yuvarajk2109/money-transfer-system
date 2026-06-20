@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './confirm-dialog.css'
 })
 export class ConfirmDialog {
-
   @Input() title = 'Confirm';
   @Input() message = 'Are you sure?';
+
   @Input() confirmText = 'Confirm';
   @Input() cancelText = 'Cancel';
+  @Input() type: 'primary' | 'info' | 'warning' | 'danger' = 'primary';
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

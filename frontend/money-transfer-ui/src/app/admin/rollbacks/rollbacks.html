@@ -59,6 +59,7 @@
 @if (showConfirm) {
 <app-confirm-dialog title="Confirm Rollback"
   message="Are you sure you want to {{ confirmAction }} this rollback request?" confirmText="Yes, {{ confirmAction }}"
-  cancelText="Cancel" (confirm)="confirmActionExecute()" (cancel)="closeConfirm()">
+  cancelText="Cancel" [type]="confirmAction === 'approve' ? 'primary' : 'danger'" (confirm)="confirmActionExecute()"
+  (cancel)="closeConfirm()">
 </app-confirm-dialog>
 }

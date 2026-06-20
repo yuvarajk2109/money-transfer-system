@@ -5,11 +5,12 @@ import { API } from '../../core/api';
 import { RouterModule } from '@angular/router';
 import { FormService } from '../../core/services/form.service';
 import { PaginationComponent } from '../../shared/pagination/pagination';
+import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-approvals',
   standalone: true,
-  imports: [RouterModule, CommonModule, PaginationComponent],
+  imports: [RouterModule, CommonModule, PaginationComponent, ConfirmDialog],
   templateUrl: './approvals.html'
 })
 export class Approvals implements OnInit {
@@ -19,11 +20,16 @@ export class Approvals implements OnInit {
   message = '';
   messageType = '';
 
+  // modal
+  showConfirm = false;
+  confirmAction: 'approve' | 'reject' = 'approve';
+  selectedAccountId: number = 0;
+
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private form: FormService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadPending();
@@ -47,6 +53,25 @@ export class Approvals implements OnInit {
       });
   }
 
+  openConfirm(id: number, action: 'approve' | 'reject') {
+    this.selectedAccountId = id;
+    this.confirmAction = action;
+    this.showConfirm = true;
+  }
+
+  closeConfirm() {
+    this.showConfirm = false;
+  }
+
+  confirmActionExecute(): void {
+    if (this.confirmAction === 'approve') {
+      this.approve(this.selectedAccountId);
+    } else {
+      this.reject(this.selectedAccountId);
+    }
+    this.showConfirm = false;
+  }
+
   approve(id: number): void {
 
     if (this.loading) return;
@@ -59,10 +84,21 @@ export class Approvals implements OnInit {
       .subscribe({
         next: () => {
           this.form.setSuccess(this, `Account ID ${id} approved successfully`);
-          this.loadPending();   // reload list
+
+          this.accounts = this.accounts.filter(a => a.id !== id);
+          if (this.currentPage > 1 && this.paginatedAccounts.length === 0) {
+            this.currentPage--;
+          }
+          this.loading = false;
+          this.cdr.detectChanges();
+
+          setTimeout(() => {
+            this.loadPending();
+          }, 200);
         },
         error: (err) => {
           this.form.setError(this, err, 'Approval failed');
+          this.loading = false;
           this.cdr.detectChanges();
         }
       });
@@ -80,10 +116,21 @@ export class Approvals implements OnInit {
       .subscribe({
         next: () => {
           this.form.setSuccess(this, `Account ID ${id} rejected`);
-          this.loadPending();
+
+          this.accounts = this.accounts.filter(a => a.id !== id);
+          if (this.currentPage > 1 && this.paginatedAccounts.length === 0) {
+            this.currentPage--;
+          }
+          this.loading = false;
+          this.cdr.detectChanges();
+
+          setTimeout(() => {
+            this.loadPending();
+          }, 200);
         },
         error: (err) => {
           this.form.setError(this, err, 'Reject failed');
+          this.loading = false;
           this.cdr.detectChanges();
         }
       });

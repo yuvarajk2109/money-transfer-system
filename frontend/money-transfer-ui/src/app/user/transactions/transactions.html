@@ -118,6 +118,7 @@
 
 @if (showRollbackDialog) {
 <app-confirm-dialog title="Request Rollback" message="Are you sure you want to request rollback for this transaction?"
-  confirmText="Yes, Request" cancelText="Cancel" (confirm)="confirmRollback()" (cancel)="cancelRollback()">
+  confirmText="Yes, Request" cancelText="Cancel" type="warning" (confirm)="confirmRollback()"
+  (cancel)="cancelRollback()">
 </app-confirm-dialog>
 }

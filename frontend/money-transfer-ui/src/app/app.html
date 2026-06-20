@@ -5,8 +5,13 @@
 </div>
 
 @if (showLogoutModal) {
-  <app-logout-confirm
+  <app-confirm-dialog
+    title="Logout"
+    message="Are you sure you want to log out?"
+    confirmText="Yes, Logout"
+    cancelText="Cancel"
+    type="danger"
     (confirm)="confirmLogout()"
     (cancel)="closeLogout()">
-  </app-logout-confirm>
+  </app-confirm-dialog>
 }

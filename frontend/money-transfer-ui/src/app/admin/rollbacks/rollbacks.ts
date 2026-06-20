@@ -40,7 +40,7 @@ export class Rollbacks implements OnInit {
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
     private form: FormService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadRollbacks();
@@ -95,7 +95,7 @@ export class Rollbacks implements OnInit {
           // SUCCESS MESSAGE
           this.form.setSuccess(
             this,
-            `Rollback ${this.confirmAction}d successfully`
+            `Rollback ${this.confirmAction} successful`
           );
 
           this.showConfirm = false;
@@ -106,7 +106,7 @@ export class Rollbacks implements OnInit {
 
           // reset pagination if needed
           if (this.currentPage > 1 &&
-              this.paginatedRollbacks.length === 0) {
+            this.paginatedRollbacks.length === 0) {
             this.currentPage--;
           }
 

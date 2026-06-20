@@ -1,11 +1,11 @@
 <div class="modal-backdrop">
   <div class="modal-card">
 
-    <h2>{{ title }}</h2>
+    <h2 [class]="type === 'primary' ? '' : type">{{ title }}</h2>
     <p>{{ message }}</p>
 
     <div class="modal-actions">
-      <button class="btn is-primary" (click)="onConfirm()">
+      <button class="btn" [ngClass]="'is-' + type" (click)="onConfirm()">
         {{ confirmText }}
       </button>
 

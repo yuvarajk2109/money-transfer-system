@@ -3,13 +3,13 @@ import { RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/navbar/navbar';
 import { ModalService } from './core/services/modal.service';
 import { AuthService } from './core/services/auth.service';
-import { LogoutConfirm } from './shared/logout-confirm/logout-confirm';
+import { ConfirmDialog } from './shared/confirm-dialog/confirm-dialog';
 import FontFaceObserver from 'fontfaceobserver';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, LogoutConfirm],
+  imports: [RouterOutlet, Navbar, ConfirmDialog],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -33,7 +33,7 @@ export class App {
     if (document.documentElement.classList.contains('webfont-loaded')) {
       return;
     }
-    
+
     var fidelitySansBold = new FontFaceObserver('Fidelity Sans Bold'),
       fidelitySansBoldItalic = new FontFaceObserver('Fidelity Sans Bold Italic'),
       fidelityExtraBold = new FontFaceObserver('Fidelity Sans Extra Bold'),
@@ -57,12 +57,12 @@ export class App {
       fidelitySansCondensedMedium.load(),
       fidelitySansDemibold.load()
     ]).then(
-      function() {
+      function () {
         document.documentElement.classList.add('webfont-loaded');
         // Optional: set a cookie so the SSI directive works on reload
         document.cookie = "webfont-loaded=true; path=/; max-age=31536000";
       },
-      function() {
+      function () {
         console.info('Web fonts could not be loaded in time. Falling back to system fonts.');
       }
     );
@@ -75,5 +75,5 @@ export class App {
   closeLogout() {
     this.modal.closeLogout();
   }
-  
+
 }
