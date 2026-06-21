@@ -151,7 +151,7 @@ public class RewardService {
                 .mapToInt(r -> Math.abs(r.getPoints())).sum();
         int totalPointsLifetime = rewards.stream().filter(r -> !r.getRevoked() && r.getPoints() > 0)
                 .mapToInt(RewardPoint::getPoints).sum();
-        int totalRewardsCount = (int) rewards.stream().filter(r -> !r.getRevoked()).count();
+        int totalRewardsCount = (int) rewards.stream().filter(r -> !r.getRevoked() && r.getPoints() > 0).count();
         return new RewardSummaryResponse(totalActive, totalRewardsCount, revoked, usedPoints, totalPointsLifetime);
     }
 
