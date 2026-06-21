@@ -1,0 +1,48 @@
+@startuml
+left to right direction
+
+<style>
+  root {
+    FontName: Calibri, sans-serif;
+    FontSize: 15;
+    FontColor: #141414;
+  }
+  stateDiagram {
+    state {
+      BackgroundColor: #FFF1F1;
+      LineColor: #C31212;
+      LineThickness: 2;
+      RoundCorner: 10;
+    }
+    arrow {
+      LineColor: #C31212;
+      LineThickness: 2;
+    }
+  }
+</style>
+
+state "Admin Login\n(Seed Account)" as Login
+state "Admin Dashboard" as Dash
+state "Review Pending\nAccount Registrations" as Accs
+state "Review Pending\nRollback Requests" as Rolls
+state "View Global Ledger" as Ledger
+state "View All Accounts" as AllAccs
+state "Execute Deposit\n(Fund Injection)" as Dep
+
+[*] --> Login
+Login --> Dash
+
+Dash --> Accs
+Accs --> [*] : Approve / Reject
+
+Dash --> Rolls
+Rolls --> [*] : Approve / Reject
+
+Dash --> Ledger
+Ledger --> [*]
+
+Dash --> AllAccs
+AllAccs --> Dep : Select Target Account
+Dep --> [*] : Ledger Updated
+
+@enduml

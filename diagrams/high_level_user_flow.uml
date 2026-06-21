@@ -1,0 +1,77 @@
+@startuml
+title Core System Workflow (High-Level)
+
+<style>
+  /* Global Presentation Styles */
+  root {
+    FontName: Calibri, sans-serif;
+    FontSize: 15;
+    FontColor: #141414;
+  }
+  
+  activityDiagram {
+    activity {
+      BackgroundColor: #FFFFFF;
+      LineColor: #757473;
+      LineThickness: 2;
+      RoundCorner: 10;
+      Padding: 10;
+    }
+    arrow {
+      LineColor: #1D3986;
+      LineThickness: 2;
+    }
+    diamond {
+      BackgroundColor: #F5F3F0;
+      LineColor: #1D3986;
+      LineThickness: 2;
+    }
+  }
+</style>
+
+|#F5FAFF|User Workflow|
+|#F9F7F5|Admin Workflow|
+
+|User Workflow|
+start
+:Register Account;
+
+|Admin Workflow|
+:Approve Account;
+
+|User Workflow|
+:User Login;
+
+fork
+  :Initiate Transfer;
+  if (Made a mistake?) then (yes)
+    :Request Rollback;
+    
+    |Admin Workflow|
+    :Review Rollback Request;
+    if (Approve?) then (yes)
+      :Execute Rollback\n(Reverse Ledger);
+    else (Reject)
+      :Reject Rollback;
+    endif
+    
+    |User Workflow|
+  else (no)
+  endif
+fork again
+  :View Transactions;
+end fork
+stop
+
+|Admin Workflow|
+start
+:Admin Login\n(Seed Account);
+fork
+  :View All Accounts;
+  :Execute Deposit\n(Fund Injection);
+fork again
+  :View Global Transactions;
+end fork
+stop
+
+@enduml
