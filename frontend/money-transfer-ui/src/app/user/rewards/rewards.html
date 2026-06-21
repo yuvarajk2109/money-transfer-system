@@ -51,7 +51,15 @@
     </div>
 
     <!-- Reward History Table -->
-    <h3>Reward History</h3>
+    <div class="section-header" style="margin-top: 40px; margin-bottom: 20px;">
+      <div class="title-group">
+        <h3>Reward History</h3>
+      </div>
+      <button class="btn is-secondary" (click)="resetFilters()">
+        Reset Filters
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+    </div>
 
     @if (!loading && rewards.length === 0) {
     <p class="empty-text">No rewards earned yet. Transfer over ₹100 to start earning!</p>
@@ -70,8 +78,22 @@
           <tr>
             <th>Transaction ID</th>
             <th>Amount</th>
-            <th>Points</th>
-            <th>Status</th>
+            <th>
+              <div class="th-filter">
+                <span>Points</span>
+                <app-dropdown [(ngModel)]="filters.points" (selectionChange)="applyFilters()" [options]="pointsOptions"
+                  [isTableFilter]="true">
+                </app-dropdown>
+              </div>
+            </th>
+            <th>
+              <div class="th-filter">
+                <span>Status</span>
+                <app-dropdown [(ngModel)]="filters.status" (selectionChange)="applyFilters()" [options]="statusOptions"
+                  [isTableFilter]="true">
+                </app-dropdown>
+              </div>
+            </th>
             <th>Date</th>
           </tr>
         </thead>

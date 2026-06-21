@@ -2,19 +2,39 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { API } from '../../core/api';
+import { FormsModule } from '@angular/forms';
 import { CustomDatePipe } from '../../shared/pipes/custom-date.pipe';
+import { Dropdown, DropdownOption } from '../../shared/dropdown/dropdown';
 
 @Component({
   selector: 'app-rewards',
   standalone: true,
-  imports: [CommonModule, CustomDatePipe],
+  imports: [CommonModule, FormsModule, CustomDatePipe, Dropdown],
   templateUrl: './rewards.html',
   styleUrl: './rewards.css'
 })
 export class Rewards implements OnInit {
 
   rewards: any[] = [];
+  filteredRewards: any[] = [];
   summary: any = { totalPoints: 0, totalRewards: 0, revokedPoints: 0, usedPoints: 0, totalPointsLifetime: 0 };
+
+  filters = {
+    status: '',
+    points: ''
+  };
+
+  statusOptions: DropdownOption[] = [
+    { label: 'All', value: '' },
+    { label: 'Active', value: 'ACTIVE' },
+    { label: 'Revoked', value: 'REVOKED' }
+  ];
+
+  pointsOptions: DropdownOption[] = [
+    { label: 'All', value: '' },
+    { label: 'Rewarded', value: 'REWARDED' },
+    { label: 'Used', value: 'USED' }
+  ];
 
   linkedAccounts: any[] = [];
   linkableAccounts: any[] = [];
@@ -44,6 +64,7 @@ export class Rewards implements OnInit {
     this.http.get<any[]>(API.REWARDS.GROUP).subscribe({
       next: (data) => {
         this.rewards = data;
+        this.applyFilters();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -101,14 +122,35 @@ export class Rewards implements OnInit {
     });
   }
 
+  applyFilters(): void {
+    this.filteredRewards = this.rewards.filter(r => {
+
+      if (this.filters.status === 'ACTIVE' && r.revoked) return false;
+      if (this.filters.status === 'REVOKED' && !r.revoked) return false;
+
+      if (this.filters.points === 'REWARDED' && r.points <= 0) return false;
+      if (this.filters.points === 'USED' && r.points >= 0) return false;
+
+      return true;
+    });
+
+    this.currentPage = 1;
+  }
+
+  resetFilters(): void {
+    this.filters.status = '';
+    this.filters.points = '';
+    this.applyFilters();
+  }
+
   // Pagination helpers
   get pagedRewards(): any[] {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.rewards.slice(start, start + this.pageSize);
+    return this.filteredRewards.slice(start, start + this.pageSize);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.rewards.length / this.pageSize);
+    return Math.ceil(this.filteredRewards.length / this.pageSize);
   }
 
   goToPage(page: number): void {
