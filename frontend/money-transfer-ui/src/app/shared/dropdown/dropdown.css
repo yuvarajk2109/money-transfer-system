@@ -1,3 +1,25 @@
+.form-select {
+    width: 100%;
+    padding: 12px 36px 12px 12px;
+
+    border: 2px solid var(--surface-line-subtle);
+    border-radius: 10px;
+
+    font-size: 1rem;
+    font-family: inherit;
+
+    background-color: var(--surface-container-background-medium);
+    color: var(--surface-foreground);
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.2s ease;
+
+}
+
 .form-select:focus {
     outline: none;
     border-color: var(--accent-primary-background);
