@@ -1,4 +1,76 @@
 .card {
-    max-width: 700px;
-    margin: 0 auto;
+  max-width: 700px;
+  margin: 10px auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 18px;
+}
+
+.form-grid .full-width,
+.full-width {
+  grid-column: span 2;
+}
+
+.form-grid .btn-container {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.full-width-btn {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid .full-width,
+  .full-width {
+    grid-column: span 1;
+  }
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.calendar-trigger {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.calendar-trigger svg {
+  width: 20px;
+  height: 20px;
+}
+
+.calendar-trigger:hover {
+  opacity: 1;
+}
+
+.calendar-container {
+  position: relative;
+}
+
+app-date-picker {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  z-index: 1000;
 }
