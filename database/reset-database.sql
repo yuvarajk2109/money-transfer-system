@@ -4,7 +4,9 @@
 USE money_transfer_db;
 
 -- Drop tables if they exist (in correct order due to foreign keys)
+DROP TABLE IF EXISTS reward_points;
 DROP TABLE IF EXISTS transaction_logs;
+DROP TABLE IF EXISTS linked_accounts;
 DROP TABLE IF EXISTS accounts;
 
 -- Recreate accounts table
@@ -27,7 +29,8 @@ DROP TABLE IF EXISTS accounts;
            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
            INDEX idx_email (email),
            INDEX idx_status (status),
-           INDEX idx_approved (approved)
+           INDEX idx_approved (approved),
+           CONSTRAINT uq_email_account_type UNIQUE (email, account_type)
        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Recreate transaction_logs table
@@ -53,16 +56,6 @@ DROP TABLE IF EXISTS accounts;
         FOREIGN KEY (to_account_id) REFERENCES accounts(id) ON DELETE SET NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Add SELF_TRANSFER to transaction_logs
-ALTER TABLE transaction_logs 
-MODIFY COLUMN transaction_type ENUM('DEBIT', 'CREDIT', 'DEPOSIT', 'TRANSFER', 'REVERSAL', 'SELF_TRANSFER') NOT NULL;
-
--- Remove unique constraint on email to allow multiple accounts per email
-ALTER TABLE accounts DROP INDEX email;
-
--- Add unique constraint on (email, account_type) to prevent same-type duplicates
-ALTER TABLE accounts ADD CONSTRAINT uq_email_account_type UNIQUE (email, account_type);
-
 -- Create linked_accounts table
 CREATE TABLE linked_accounts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -85,8 +78,8 @@ CREATE TABLE reward_points (
     revoked_at TIMESTAMP NULL,
     CONSTRAINT fk_reward_account FOREIGN KEY (account_id) REFERENCES accounts(id),
     CONSTRAINT fk_reward_transaction FOREIGN KEY (transaction_id) REFERENCES transaction_logs(transaction_id),
-    CONSTRAINT uq_reward_transaction UNIQUE (transaction_id),
-    INDEX idx_reward_account (account_id)
+    INDEX idx_reward_account (account_id),
+    INDEX idx_reward_transaction (transaction_id)
 );
 
 -- Tables are now empty and ready for the application to create the admin user automatically
