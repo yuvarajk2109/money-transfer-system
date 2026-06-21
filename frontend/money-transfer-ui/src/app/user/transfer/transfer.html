@@ -84,7 +84,7 @@
         <input type="number" [(ngModel)]="transferData.usedRewardPoints" (input)="clearMessage()"
           name="usedRewardPoints" #pointsCtrl="ngModel" required min="1" [max]="activePoints" />
         <div class="helper-text">Available Points: {{ activePoints }}</div>
-        
+
         @if (pointsCtrl.invalid && (pointsCtrl.dirty || pointsCtrl.touched)) {
         <div class="message error inline">
           @if (pointsCtrl.errors?.['required']) {
