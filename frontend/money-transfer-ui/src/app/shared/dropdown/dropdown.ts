@@ -13,6 +13,7 @@ export interface DropdownOption {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './dropdown.html',
+  styleUrl: './dropdown.css',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

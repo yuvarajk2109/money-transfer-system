@@ -350,35 +350,6 @@ input[type="date"] {
 
 }
 
-.form-select:focus {
-  outline: none;
-  border-color: var(--accent-primary-background);
-}
-
-.form-select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.form-select-wrapper i {
-  position: absolute;
-  right: 12px;
-  pointer-events: none;
-  color: var(--surface-foreground);
-  font-size: 16px;
-  transition: opacity 0.2s ease;
-}
-
-.form-select-wrapper.open .select-arrow-down {
-  opacity: 0;
-}
-
-.form-select-wrapper.open .select-arrow-up {
-  opacity: 1;
-}
-
 .date-input-wrapper {
   position: relative;
   display: flex;
@@ -691,10 +662,6 @@ app-date-picker {
   padding: 12px 0;
 }
 
-.account-filter {
-  min-width: 160px;
-}
-
 .accounts-card {
   margin-top: 20px;
   padding: 20px;
@@ -765,82 +732,6 @@ tr:hover {
 
 .th-filter span {
   font-weight: 600;
-}
-
-.table-filter {
-  appearance: none;
-  /* remove default arrow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  font-family: inherit;
-  font-size: 0.9rem;
-  color: var(--surface-foreground);
-
-  margin-left: auto;
-
-  padding: 6px 34px 6px 12px;
-  border-radius: 10px;
-
-  border: 2px solid var(--surface-line-subtle);
-  background-color: var(--surface-container-background-medium);
-
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.table-filter:hover {
-  border-color: var(--surface-line);
-}
-
-.table-filter:focus {
-  outline: none;
-  border-color: var(--accent-primary-background);
-}
-
-.table-filter:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.filter-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  margin-left: auto;
-}
-
-.filter-wrapper .table-filter {
-  margin-left: 0;
-}
-
-.filter-wrapper i {
-  position: absolute;
-  right: 12px;
-  pointer-events: none;
-  color: var(--surface-foreground);
-  font-size: 14px;
-  transition: opacity 0.1s ease;
-}
-
-.select-arrow-up {
-  opacity: 0;
-}
-
-.filter-wrapper.open .select-arrow-down {
-  opacity: 0;
-}
-
-.filter-wrapper.open .select-arrow-up {
-  opacity: 1;
-}
-
-.table-filter option {
-  font-family: inherit;
-  font-size: 0.9rem;
-  padding: 6px;
-  background: var(--surface-container-background-medium);
-  color: var(--surface-foreground);
 }
 
 .badge {
