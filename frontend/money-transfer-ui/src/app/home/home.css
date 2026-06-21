@@ -24,11 +24,33 @@
 .features {
     background-color: var(--surface-container-background-medium);
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    /* exactly 4 per row */
     gap: 20px;
     margin-top: 30px;
     margin-bottom: 30px;
+}
+
+@media (min-width: 1200px) {
+    .features {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 900px) {
+    .features {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 899px) and (min-width: 600px) {
+    .features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 599px) {
+    .features {
+        grid-template-columns: 1fr;
+    }
 }
 
 .feature {
