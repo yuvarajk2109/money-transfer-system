@@ -1,0 +1,71 @@
+@startuml
+<style>
+  /* Global styles optimized for Presentation */
+  root {
+    FontName: Calibri, sans-serif;
+    FontSize: 14;
+    FontColor: #141414;
+  }
+  
+  activityDiagram {
+    activity {
+      BackgroundColor: #FFFFFF;
+      LineColor: #757473;
+      LineThickness: 2;
+      RoundCorner: 10;
+      Padding: 8;
+    }
+    diamond {
+      BackgroundColor: #F5F3F0;
+      LineColor: #1D3986;
+      LineThickness: 2;
+    }
+    arrow {
+      LineColor: #1D3986;
+      LineThickness: 2;
+    }
+    note {
+      BackgroundColor: #FFF8ED;
+      LineColor: #9D3B0F;
+      FontColor: #403F3E;
+    }
+  }
+</style>
+
+|#F9F7F5|1. Transfer Initialization|
+start
+:Initiate Transfer\n(Amount, Used Pts);
+
+if (Linked Accounts?) then (yes)
+  :SELF_TRANSFER;
+  note right: Rewards\nbypassed
+  stop
+else (no)
+
+|#FFFFFF|2. Reward Processing|
+  fork
+    if (Used Pts > 0?) then (yes)
+      :Subsidize Transfer;
+      :Log Negative\nReward;
+    else (no)
+    endif
+  fork again
+    :Calc Eligible Amt;
+    if (Eligible >= ₹100?) then (yes)
+      :Log Positive\nReward;
+    else (no)
+    endif
+  end fork
+  :Commit;
+endif
+
+|#F9F7F5|3. Rollback Phase|
+:Admin Approves\nRollback;
+:Reverse;
+:Revoke ALL associated\nReward Points;
+note right
+  Revokes BOTH used
+  and earned points.
+end note
+stop
+@enduml
